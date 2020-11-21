@@ -29,6 +29,9 @@
 #include <QStringList>
 //#include <QPrinter>
 #include <QRect>
+#include <stdio.h>
+#include <list>
+#include<clu.h>
 
 namespace Ui {
 class MainWindow;
@@ -42,10 +45,16 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_zoom_out_Button_clicked();
+
+    void on_zoom_in_Button_clicked();
+
 private:
     Ui::MainWindow *ui;
         int count;//记录有几个框选框,点击一次rectangle或circle就加1
         QPixmap img;    //图片
+        QPixmap img2;
         QString imgDir; //图片目录
         int currentRotate;
         double scaleFactor;       // 缩放比例
@@ -63,7 +72,11 @@ private:
 
 
         QVector<QString> lables;//保存键入的标签内容
+        void scaleImage(double factor);//缩放图片的公共函数
 //        std::vector<draw_point> draws;  //保存所画的框选框
+
+        QVector<project>list;
+
 };
 
 #endif // MAINWINDOW_H

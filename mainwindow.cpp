@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "util.h"
+#include "clu.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -33,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
        QMap<int, int> desktop = Util::GetScreenResolution();//存储获取的屏幕分辨率
        int desktopWidth = desktop.firstKey();
        int desktopHeight = desktop[desktopWidth];
-       int factor = 2;//？
+       int factor = 1;//？
        int w = desktopWidth / factor;
        int h = desktopHeight / factor;
        this->resize(w, h);//设置大小
@@ -68,15 +69,63 @@ qDebug()<<"aaa";
 
 
                    //imgVision->show();
-                   ui->viewLabel->resize(w, h);
-                   ui->viewLabel->setPixmap(img);
-
-
-
-}
+//                   ui->viewLabel->resize(w, h);
+                   ui->viewLabel->setPixmap(img);                   
+        }
+       for(int i=0;i<2;i++){
+           project p1;
+           p1.name="111";
+           list.append(p1);
+           project p2;
+           p2.name="222";
+           list.append(p2);
+       }
+       qDebug()<<list.at(0).name<<endl<<list.at(1).name<<endl;
+       QVBoxLayout *layout = new QVBoxLayout;
+       for(int i=0;i<2;i++){
+           QString a=QString("%1").arg(i);
+           QCheckBox *q1=new QCheckBox(a);
+           layout->addWidget(q1);
+       }
+       ui->widget->setLayout(layout);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::scaleImage(double factor){
+    scaleFactor*=factor;//缩放比例scaleFactor初始值为1
+    QSize size = img.size();//原始照片
+    QSize scaleSize = scaleFactor * size;//放缩后的图片
+    img2 = img.scaled(scaleSize, Qt::KeepAspectRatio);
+
+    ui->viewLabel->setPixmap(img2);
+    ui->zoom_in_Button->setEnabled(true);
+    ui->zoom_out_Button->setEnabled(true);//放大和缩小按钮正常工作
+    if(scaleFactor<=0.25)
+        ui->zoom_in_Button->setEnabled(false);//当放缩的倍率小于0.25时，缩小按钮停止工作
+    if(scaleFactor>=2.5)
+        ui->zoom_out_Button->setEnabled(false);//当放缩的倍率高于2.5时，放大的按钮停止工作
+
+}
+
+
+void MainWindow::on_zoom_out_Button_clicked()
+{
+    if (img.isNull()) {
+                return;
+        }
+        double factor = 1.25;//make it large as 1.25
+        scaleImage(factor);
+}
+
+void MainWindow::on_zoom_in_Button_clicked()
+{
+    if (img.isNull()) {
+                return;
+        }
+        double factor = 0.8;//每次都缩小0.8倍
+        scaleImage(factor);
 }

@@ -37,7 +37,7 @@
 #include<QDebug>
 #include<QSqlError>
 #include <QSqlQuery>
-
+#include <shell.h>
 
 namespace Ui {
 class MainWindow;
@@ -55,6 +55,8 @@ private slots:
     void on_zoom_out_Button_clicked();
 
     void on_zoom_in_Button_clicked();
+
+    void on_Btn_confirm_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -80,8 +82,9 @@ private:
         QVector<QString> lables;//保存键入的标签内容
         void scaleImage(double factor);//缩放图片的公共函数
 //        std::vector<draw_point> draws;  //保存所画的框选框
-
+        QString dot;
         QVector<project>list;
+        QVector<QCheckBox>b_list;
 
 };
 

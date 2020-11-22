@@ -3,25 +3,47 @@
 #include "util.h"
 #include "clu.h"
 
+
+
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    //connet to postgre
+    QSqlDatabase *db=new QSqlDatabase(QSqlDatabase::addDatabase ("QPSQL"));
+    db->setHostName("172.23.5.168") ;
+    db->setPort (5432);
+    db->setUserName ("postgres") ;
+    db->setPassword("126041");
+    db-> setDatabaseName ("dachuang") ;
+
+    //test the connection
+    qDebug()<<"begin to connect";
+    if(db->open())
+    qDebug()<<"connect db success" ;
+    else
+    {
+    qDebug()<<"error: connect db ";
+    qDebug() .noquote() <<db->lastError() ;
+    }
+
 
     ui->setupUi(this);
    //析构函数
-       imgDir = "";//add显示读取的目录
-       count = 0;//标签个数
-       if (img.isNull()) {
+//       imgDir = "";//add显示读取的目录
+//       count = 0;//标签个数
+//       if (img.isNull()) {
 //               ui->zoom_in_Button->setEnabled(false);
 //               ui->zoom_out_Button->setEnabled(false);
 //               ui->left_Button->setEnabled(false);
 //               ui->right_Button->setEnabled(false);
 //               ui->rectangle_Button->setEnabled(false);
 //               ui->round_Button->setEnabled(false);
-               ui->viewLabel->setText("打开一个图片(Ctrl+O)");
+//               ui->viewLabel->setText("打开一个图片(Ctrl+O)");
 //               ui->lineEdit->setReadOnly( true );
-           }//设置如果没有图片时这些按钮是无法点击的状态
+//           }//设置如果没有图片时这些按钮是无法点击的状态
 
 //       ui->openButton->setShortcut(QKeySequence("Ctrl+O"));//设定打开的快捷键
 //       ui->saveButton->setShortcut(QKeySequence("Ctrl+S"));//设定保存的快捷键
@@ -43,10 +65,9 @@ MainWindow::MainWindow(QWidget *parent) :
 //       frame_layout=new QGridLayout(ui->viewLabel);
 //       frame_layout->addWidget(imgVision);
 
-
        setWindowTitle("code_visualization");//显示标题
 
-qDebug()<<"aaa";
+//qDebug()<<"aaa";
        QString path = "/home/nss/code20201109/code_visualization/e.png";
        if (path.isEmpty()) {//如果路径为空
                    QMessageBox mesg;//出现弹窗
@@ -68,26 +89,79 @@ qDebug()<<"aaa";
                    int h = img.height();//图片宽度和长度
 
 
+
                    //imgVision->show();
 //                   ui->viewLabel->resize(w, h);
-                   ui->viewLabel->setPixmap(img);                   
+                   ui->viewLabel->setPixmap(img);
         }
-       for(int i=0;i<2;i++){
+
+       QSqlQuery query;
+       query.exec("select * from get_project()");
+       while(query.next()){
            project p1;
-           p1.name="111";
+           QString name=query.value(0).toString();
+           p1.name=name;
+           p1.id=query.value(1).toInt();
+           p1.b1->setText(name);
            list.append(p1);
-           project p2;
-           p2.name="222";
-           list.append(p2);
+           qDebug()<<"id: "<<p1.id<<"    name:"<<p1.name<<endl;
        }
-       qDebug()<<list.at(0).name<<endl<<list.at(1).name<<endl;
+
+
+
+
+
+//       for(int i=0;i<2;i++){
+//           project p1;
+//           p1.name="111";
+//           list.append(p1);
+//           project p2;
+//           p2.name="222";
+//           list.append(p2);
+//       }
+//       qDebug()<<list.at(0).name<<endl<<list.at(1).id<<endl;
        QVBoxLayout *layout = new QVBoxLayout;
-       for(int i=0;i<2;i++){
-           QString a=QString("%1").arg(i);
-           QCheckBox *q1=new QCheckBox(a);
-           layout->addWidget(q1);
+       qDebug()<<list.capacity()<<endl;
+//       QCheckBox q1[10];
+       for(int i=0;i<list.size();i++){
+//           QString a=QString("%1").arg(i);
+           QString tep="select get_function(";
+           tep.append(QString("%1").arg(list.at(i).id));
+           tep.append(")");
+           qDebug()<<tep<<endl;
+           query.exec(tep);
+           query.next();
+           QString tem=query.value(0).toString();
+            qDebug()<<tem<<endl;
+           list[i].dot=tem;
+           qDebug()<<list.at(i).id<<endl<<list.at(i).dot<<endl;
+           QString a=list.at(i).name;
+           qDebug()<<"1"<<endl;
+//           list[i].b1->setText("aaaa");
+                      qDebug()<<"2"<<endl;
+//           QCheckBox *q1=new QCheckBox(a);
+//           q1->setText(a);
+//           b_list.append();
+          layout->addWidget(list[i].b1);
+                     qDebug()<<"3"<<endl;
        }
+
        ui->widget->setLayout(layout);
+        QString temm="select get_function(28);";
+       query.exec(temm);
+       qDebug()<<"????"<<endl;
+       query.next();
+       QString usage=query.value(0).toString();
+       qDebug()<<usage<<endl;
+
+//       shell::exe("dot -Tpng /home/nss/code20201109/code_visualization/e.dot -o /home/nss/code20201109/code_visualization/e.png");
+////       shell::exe("ls");
+//           QPixmap tmp(path);
+//               img = tmp;
+//               ui->viewLabel->setPixmap(img);
+//       db->close() ;
+//       delete db;
+
 }
 
 MainWindow::~MainWindow()
@@ -129,3 +203,25 @@ void MainWindow::on_zoom_in_Button_clicked()
         double factor = 0.8;//每次都缩小0.8倍
         scaleImage(factor);
 }
+
+void MainWindow::on_Btn_confirm_clicked()
+{
+    int num=list.size();
+    for(int i=0;i<num;i++){
+        int m=list.at(i).b1->checkState();
+        qDebug()<<list.at(i).name<<"  "<<m<<endl;
+        if(list.at(i).b1->checkState()){
+                dot=list.at(i).dot;
+                break;
+    }
+    }
+    shell::save(dot);
+    shell::exe("dot -Tpng /home/nss/code20201109/code_visualization/e.dot -o /home/nss/code20201109/code_visualization/e.png");
+    QPixmap tmp("/home/nss/code20201109/code_visualization/e.png");//读取图片的名称和路径，类QPixmap代表图像
+    img = tmp;
+    ui->viewLabel->setPixmap(img);
+
+
+}
+
+

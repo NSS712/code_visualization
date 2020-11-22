@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1359</width>
-    <height>773</height>
+    <width>2012</width>
+    <height>1226</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,13 +15,22 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="viewLabel">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>70</y>
-      <width>1021</width>
-      <height>711</height>
+      <y>50</y>
+      <width>1691</width>
+      <height>701</height>
      </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>2000</width>
+      <height>1031</height>
+     </size>
     </property>
     <property name="text">
      <string>ViewLabel</string>
@@ -59,8 +68,22 @@
       <x>60</x>
       <y>80</y>
       <width>231</width>
-      <height>511</height>
+      <height>621</height>
      </rect>
+    </property>
+    <zorder>viewLabel</zorder>
+   </widget>
+   <widget class="QPushButton" name="Btn_confirm">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>710</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>confirm</string>
     </property>
    </widget>
   </widget>
@@ -69,7 +92,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1359</width>
+     <width>2012</width>
      <height>28</height>
     </rect>
    </property>

@@ -32,6 +32,12 @@
 #include <stdio.h>
 #include <list>
 #include<clu.h>
+#include <QCoreApplication>
+#include<QtSql/QSqlDatabase>
+#include<QDebug>
+#include<QSqlError>
+#include <QSqlQuery>
+
 
 namespace Ui {
 class MainWindow;
